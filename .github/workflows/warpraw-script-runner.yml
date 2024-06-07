@@ -1,0 +1,80 @@
+name: WARPRAW Script Runner
+
+on:
+  push:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour
+  workflow_dispatch:
+
+jobs:
+  run_warp_script:
+    runs-on: ubuntu-latest
+
+    env:
+      ENV_FILE: ${{ github.workspace }}/.env  # Define a custom environment file path
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install ipaddress
+        pip install pytz
+
+    - name: Set up cache for warp binary
+      id: cache-warp
+      uses: actions/cache@v3
+      with:
+        path: .warp
+        key: ${{ runner.os }}-warp-static
+
+    - name: Create warp directory
+      run: mkdir -p .warp
+
+    - name: Download warp binary if not cached
+      if: steps.cache-warp.outputs.cache-hit != 'true'
+      run: |
+        wget https://gitlab.com/Misaka-blog/warp-script/-/raw/main/files/warp-yxip/warp-linux-$(uname -m | sed 's/x86_64/amd64/' | sed 's/i.86/386/' | sed 's/armv8/arm64/' | sed 's/aarch64/arm64/') -O .warp/warp
+        chmod +x .warp/warp
+
+    - name: Execute Warp Script
+      run: python warpraw.py
+      env:
+        WARP_PATH: .warp/warp
+
+    - name: Identify Bot Commits
+      id: find_bot_commits
+      run: |
+        BOT_EMAIL="github-actions[bot]@users.noreply.github.com"
+        BOT_NAME="github-actions[bot]"
+        BOT_COMMITS=$(git log --author="$BOT_NAME" --format=%H)
+        echo "BOT_COMMITS=$BOT_COMMITS" >> $ENV_FILE
+
+    - name: Squash Bot Commits
+      if: steps.find_bot_commits.outputs.bot_commits != ''
+      run: |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        git fetch --unshallow || true  # Fetch all history if the repository was shallow cloned
+        for commit in $(echo "${{ env.BOT_COMMITS }}" | tr '\n' ' '); do
+          git reset --soft $commit^  # Reset to the parent of the commit
+          git commit -am "Automatic update (squash)" --no-edit  # Squash commits into one
+        done
+        git push -f
+
+    - name: Push Non-Bot Commits
+      if: steps.find_bot_commits.outputs.bot_commits == ''
+      run: |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        git add -A
+        git diff-index --quiet HEAD || git commit -m "Automatic update"
+        git push
