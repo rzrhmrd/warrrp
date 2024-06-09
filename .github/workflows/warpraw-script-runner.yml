@@ -13,6 +13,8 @@ jobs:
 
     env:
       WARP_PATH: ${{ github.workspace }}/.warp/warp
+      BOT_EMAIL: github-actions[bot]@users.noreply.github.com
+      BOT_NAME: github-actions[bot]
 
     steps:
       - name: Checkout Repository
@@ -53,16 +55,14 @@ jobs:
       - name: Identify Bot Commits
         id: find_bot_commits
         run: |
-          BOT_EMAIL="github-actions[bot]@users.noreply.github.com"
-          BOT_NAME="github-actions[bot]"
-          BOT_COMMITS=$(git log --author="$BOT_NAME" --format=%H)
-          echo "BOT_COMMITS=$BOT_COMMITS" >> ${{ github.workspace }}/.env
+          BOT_COMMITS=$(git log --author="${{ env.BOT_NAME }}" --format=%H)
+          echo "BOT_COMMITS=$BOT_COMMITS" >> $GITHUB_ENV
 
       - name: Squash Bot Commits
         if: steps.find_bot_commits.outputs.bot_commits != ''
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+          git config --global user.email "${{ env.BOT_EMAIL }}"
+          git config --global user.name "${{ env.BOT_NAME }}"
           git fetch --unshallow || true  # Fetch all history if the repository was shallow cloned
           for commit in $(echo "${{ env.BOT_COMMITS }}" | tr '\n' ' '); do
             git reset --soft $commit^  # Reset to the parent of the commit
@@ -73,16 +73,8 @@ jobs:
       - name: Push Non-Bot Commits
         if: steps.find_bot_commits.outputs.bot_commits == ''
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+          git config --global user.email "${{ env.BOT_EMAIL }}"
+          git config --global user.name "${{ env.BOT_NAME }}"
           git add -A
           git diff-index --quiet HEAD || git commit -m "Automatic update"
           git push
-
-  cleanup:
-    runs-on: ubuntu-latest
-    needs: [run_warp_script]  # Ensure cleanup runs after run_warp_script job
-    steps:
-      - name: Clean up .env file
-        run: |
-          rm ${{ github.workspace }}/.env
