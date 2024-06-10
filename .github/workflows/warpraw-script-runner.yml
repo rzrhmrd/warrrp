@@ -52,26 +52,7 @@ jobs:
         env:
           WARP_PATH: ${{ env.WARP_PATH }}
 
-      - name: Identify Bot Commits
-        id: find_bot_commits
-        run: |
-          BOT_COMMITS=$(git log --author="${{ env.BOT_NAME }}" --format=%H)
-          echo "BOT_COMMITS=$BOT_COMMITS" >> $GITHUB_ENV
-
-      - name: Squash Bot Commits
-        if: steps.find_bot_commits.outputs.bot_commits != ''
-        run: |
-          git config --global user.email "${{ env.BOT_EMAIL }}"
-          git config --global user.name "${{ env.BOT_NAME }}"
-          git fetch --unshallow || true  # Fetch all history if the repository was shallow cloned
-          for commit in $(echo "${{ env.BOT_COMMITS }}" | tr '\n' ' '); do
-            git reset --soft $commit^  # Reset to the parent of the commit
-            git commit -am "Automatic update (squash)" --no-edit  # Squash commits into one
-          done
-          git push -f
-
-      - name: Push Non-Bot Commits
-        if: steps.find_bot_commits.outputs.bot_commits == ''
+      - name: Commit and Push Changes
         run: |
           git config --global user.email "${{ env.BOT_EMAIL }}"
           git config --global user.name "${{ env.BOT_NAME }}"
