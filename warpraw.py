@@ -9,10 +9,7 @@ import json
 
 # Define the CIDR ranges for Warp IPv6 IPs
 WARP_CIDR_RANGES = [
-    '2606:4700:4700::/48',
-    '2606:4700:4701::/48',
-    '2606:4700:4702::/48',
-    '2606:4700:4703::/48'
+    '2606:4700:100::/48'
 ]
 
 # Define paths to the necessary files
