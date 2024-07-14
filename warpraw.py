@@ -7,9 +7,16 @@ import base64
 import pytz
 import json
 
-# Define the CIDR ranges for Warp IPv6 IPs
+# Define the CIDR ranges for Warp IPs
 WARP_CIDR_RANGES = [
-    '2606:4700:100::/48'
+    '162.159.192.0/24',
+    '162.159.193.0/24',
+    '162.159.195.0/24',
+    '162.159.204.0/24',
+    '188.114.96.0/24',
+    '188.114.97.0/24',
+    '188.114.98.0/24',
+    '188.114.99.0/24'
 ]
 
 # Define paths to the necessary files
@@ -24,11 +31,11 @@ def get_repository_name():
 
 def generate_ip_list():
     """Generate a list of IP addresses from the given CIDR ranges and save to a file."""
-    total_ips = sum(len(list(ipaddress.IPv6Network(cidr))) for cidr in WARP_CIDR_RANGES)
+    total_ips = sum(len(list(ipaddress.IPv4Network(cidr))) for cidr in WARP_CIDR_RANGES)
 
     with open(IP_PATH, 'w') as ip_file:
         for cidr in WARP_CIDR_RANGES:
-            for i, ip_addr in enumerate(ipaddress.IPv6Network(cidr)):
+            for i, ip_addr in enumerate(ipaddress.IPv4Network(cidr)):
                 ip_file.write(str(ip_addr))
                 if i != total_ips - 1:
                     ip_file.write('\n')
