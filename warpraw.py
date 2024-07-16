@@ -96,7 +96,7 @@ def get_last_update_time():
 def generate_warp_config(clean_ips, last_update_time):
     """Generate the Warp configuration file based on the clean IPs."""
     warp_config = (
-        f'warp://{clean_ips[0]}?ifp=10-20&ifps=20-60&ifpd=5-10#IR&&detour=warp://{clean_ips[1]}#DE'
+        f'warp://{clean_ips[0]}?ifp=25-30&ifps=55-60&ifpd=5-10#IR&&detour=warp://{clean_ips[1]}#DE'
     )
 
     warp_hiddify_config = (
