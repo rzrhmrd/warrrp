@@ -20,7 +20,7 @@ WARP_PROGRAM_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
 
 def get_repository_name():
     """Get the repository name from the script directory."""
-    return os.path.basename(SCRIPT_DIR).upper()
+    return os.path.basename(os.path.dirname(SCRIPT_DIR)).upper()
 
 def generate_ip_list():
     """Generate a list of IP addresses from the given CIDR ranges and save to a file."""
@@ -34,12 +34,16 @@ def generate_ip_list():
                     ip_file.write('\n')
 
 def run_warp_program():
-    """Execute the warp program from the local bin directory."""
+    """Set permissions and execute the warp program from the local bin directory."""
     if not os.path.exists(WARP_PROGRAM_PATH):
         raise RuntimeError(f"Warp binary not found at {WARP_PROGRAM_PATH}")
 
+    # Ensure the warp binary is executable
+    os.chmod(WARP_PROGRAM_PATH, 0o755)
+
+    # Run the warp program
     process = subprocess.run([WARP_PROGRAM_PATH], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-    
+
     if process.returncode != 0:
         raise RuntimeError("Warp execution failed")
 
@@ -110,11 +114,7 @@ def main():
         print("ip.txt file already exists.")
 
     print("Executing warp program...")
-    try:
-        run_warp_program()
-    except RuntimeError as e:
-        print(e)
-        return
+    run_warp_program()
 
     print("Extracting clean IPs and generating warp config...")
     clean_ips = extract_clean_ips()
