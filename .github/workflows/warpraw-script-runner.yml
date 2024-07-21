@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      WARP_PATH: ${{ github.workspace }}/bin/warp
       BOT_EMAIL: github-actions[bot]@users.noreply.github.com
       BOT_NAME: github-actions[bot]
 
@@ -31,10 +30,8 @@ jobs:
           pip install ipaddress
           pip install pytz
 
-      - name: Execute Warp Script
+      - name: Run WARPRAW Script
         run: python warpraw.py
-        env:
-          WARP_PATH: ${{ env.WARP_PATH }}
 
       - name: Commit and Push Changes
         run: |
