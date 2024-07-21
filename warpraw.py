@@ -1,8 +1,8 @@
 import subprocess, os, datetime, base64, pytz, random
 
 SCRIPT_DIR = os.path.dirname(__file__)
-IP_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
 WARP_BINARY_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
+IP_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
 
 def get_repository_name():
     return os.path.basename(os.path.dirname(SCRIPT_DIR)).upper()
