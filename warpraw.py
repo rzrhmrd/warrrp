@@ -20,7 +20,7 @@ WARP_PROGRAM_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
 
 def get_repository_name():
     """Get the repository name from the script directory."""
-    return os.path.basename(os.path.dirname(SCRIPT_DIR)).upper()
+    return os.path.basename(SCRIPT_DIR).upper()
 
 def generate_ip_list():
     """Generate a list of IP addresses from the given CIDR ranges and save to a file."""
