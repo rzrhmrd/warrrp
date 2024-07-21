@@ -34,7 +34,7 @@ def generate_ip_list():
                     ip_file.write('\n')
 
 def run_warp_program():
-    """Set permissions and execute the warp program from the local bin directory."""
+    """Set permissions and execute the warp program."""
     if not os.path.exists(WARP_PROGRAM_PATH):
         raise RuntimeError(f"Warp binary not found at {WARP_PROGRAM_PATH}")
 
