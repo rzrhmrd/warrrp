@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      WARP_PATH: ${{ github.workspace }}/.warp/warp
+      WARP_PATH: ${{ github.workspace }}/bin/warp
       BOT_EMAIL: github-actions[bot]@users.noreply.github.com
       BOT_NAME: github-actions[bot]
 
@@ -28,24 +28,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ipaddress
           pip install pytz
-
-      - name: Set up cache for warp binary
-        id: cache-warp
-        uses: actions/cache@v3
-        with:
-          path: .warp
-          key: ${{ runner.os }}-warp-static
-
-      - name: Create warp directory
-        run: mkdir -p .warp
-
-      - name: Download warp binary if not cached
-        if: steps.cache-warp.outputs.cache-hit != 'true'
-        run: |
-          wget https://gitlab.com/Misaka-blog/warp-script/-/raw/main/files/warp-yxip/warp-linux-$(uname -m | sed 's/x86_64/amd64/' | sed 's/i.86/386/' | sed 's/armv8/arm64/' | sed 's/aarch64/arm64/') -O .warp/warp
-          chmod +x .warp/warp
 
       - name: Execute Warp Script
         run: python warpraw.py
