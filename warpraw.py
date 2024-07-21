@@ -1,12 +1,4 @@
-import ipaddress
-import platform
-import subprocess
-import os
-import datetime
-import base64
-import pytz
-import json
-import random
+import ipaddress, subprocess, os, datetime, base64, pytz, random
 
 # Define the CIDR ranges for Warp IPs
 WARP_CIDR_RANGES = [
@@ -24,7 +16,7 @@ WARP_CIDR_RANGES = [
 SCRIPT_DIR = os.path.dirname(__file__)
 IP_PATH = os.path.join(SCRIPT_DIR, 'ip.txt')
 RESULT_CSV_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
-WARP_PROGRAM_PATH = os.environ.get('WARP_PATH', os.path.join(SCRIPT_DIR, 'warp'))
+WARP_PROGRAM_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
 
 def get_repository_name():
     """Get the repository name from the script directory."""
@@ -41,25 +33,10 @@ def generate_ip_list():
                 if i != total_ips - 1:
                     ip_file.write('\n')
 
-def get_cpu_architecture_suffix():
-    """Determine the CPU architecture suffix for the warp program URL."""
-    arch = platform.machine().lower()
-    if arch.startswith('i386') or arch.startswith('i686'):
-        return '386'
-    if arch in ('x86_64', 'amd64'):
-        return 'amd64'
-    if arch in ('armv8', 'arm64', 'aarch64'):
-        return 'arm64'
-    if arch == 's390x':
-        return 's390x'
-    raise ValueError("Unsupported CPU architecture")
-
-def run_warp_program(arch_suffix):
-    """Download and execute the warp program for the specified architecture."""
+def run_warp_program():
+    """Execute the warp program from the local bin directory."""
     if not os.path.exists(WARP_PROGRAM_PATH):
-        warp_binary_url = f"https://gitlab.com/Misaka-blog/warp-script/-/raw/main/files/warp-yxip/warp-linux-{arch_suffix}"
-        subprocess.run(["wget", warp_binary_url, "-O", WARP_PROGRAM_PATH], check=True)
-        os.chmod(WARP_PROGRAM_PATH, 0o755)
+        raise RuntimeError(f"Warp binary not found at {WARP_PROGRAM_PATH}")
 
     process = subprocess.Popen(WARP_PROGRAM_PATH, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     process.wait()
@@ -133,9 +110,8 @@ def main():
     else:
         print("ip.txt file already exists.")
 
-    arch_suffix = get_cpu_architecture_suffix()
-    print("Downloading and executing warp program...")
-    run_warp_program(arch_suffix)
+    print("Executing warp program...")
+    run_warp_program()
 
     print("Extracting clean IPs and generating warp config...")
     clean_ips = extract_clean_ips()
