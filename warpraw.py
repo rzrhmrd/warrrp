@@ -1,37 +1,13 @@
-import ipaddress, subprocess, os, datetime, base64, pytz, random
-
-# Define the CIDR ranges for Warp IPs
-WARP_CIDR_RANGES = [
-    '162.159.192.0/24',
-    '162.159.193.0/24',
-    '162.159.195.0/24',
-    '162.159.204.0/24',
-    '188.114.96.0/24',
-    '188.114.97.0/24',
-    '188.114.98.0/24',
-    '188.114.99.0/24'
-]
+import subprocess, os, datetime, base64, pytz, random
 
 # Define paths to the necessary files
 SCRIPT_DIR = os.path.dirname(__file__)
-IP_PATH = os.path.join(SCRIPT_DIR, 'ip.txt')
 RESULT_CSV_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
-WARP_PROGRAM_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
+WARP_PROGRAM_PATH = os.path.join(SCRIPT_DIR, 'warp')
 
 def get_repository_name():
     """Get the repository name from the script directory."""
     return os.path.basename(os.path.dirname(SCRIPT_DIR)).upper()
-
-def generate_ip_list():
-    """Generate a list of IP addresses from the given CIDR ranges and save to a file."""
-    total_ips = sum(len(list(ipaddress.IPv4Network(cidr))) for cidr in WARP_CIDR_RANGES)
-
-    with open(IP_PATH, 'w') as ip_file:
-        for cidr in WARP_CIDR_RANGES:
-            for i, ip_addr in enumerate(ipaddress.IPv4Network(cidr)):
-                ip_file.write(str(ip_addr))
-                if i != total_ips - 1:
-                    ip_file.write('\n')
 
 def run_warp_program():
     """Set permissions and execute the warp program."""
@@ -97,7 +73,7 @@ def generate_warp_config(clean_ips, last_update_time):
 
 def clean_up():
     """Remove temporary files generated during the script execution."""
-    paths = [IP_PATH, RESULT_CSV_PATH]
+    paths = [RESULT_CSV_PATH]
     for path in paths:
         try:
             os.remove(path)
@@ -106,13 +82,6 @@ def clean_up():
 
 def main():
     """Main function to execute the warp script logic."""
-    if not os.path.exists(IP_PATH):
-        print('Creating ip.txt file...')
-        generate_ip_list()
-        print('ip.txt file created successfully.')
-    else:
-        print("ip.txt file already exists.")
-
     print("Executing warp program...")
     run_warp_program()
 
