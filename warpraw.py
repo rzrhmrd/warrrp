@@ -38,9 +38,10 @@ def run_warp_program():
     if not os.path.exists(WARP_PROGRAM_PATH):
         raise RuntimeError(f"Warp binary not found at {WARP_PROGRAM_PATH}")
 
-    result = subprocess.run(WARP_PROGRAM_PATH, shell=True, capture_output=True, text=True)
-    if result.returncode != 0:
-        raise RuntimeError(f"Warp execution failed: {result.stderr}")
+    process = subprocess.run([WARP_PROGRAM_PATH], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    
+    if process.returncode != 0:
+        raise RuntimeError("Warp execution failed")
 
 def extract_clean_ips():
     """Extract the clean IPs from the result CSV file."""
