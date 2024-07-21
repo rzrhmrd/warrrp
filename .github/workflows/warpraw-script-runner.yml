@@ -31,9 +31,6 @@ jobs:
           pip install ipaddress
           pip install pytz
 
-      - name: Set permissions for warp binary
-        run: chmod +x ${{ env.WARP_PATH }}
-
       - name: Execute Warp Script
         run: python warpraw.py
         env:
