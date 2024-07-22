@@ -1,5 +1,4 @@
 import subprocess, os, datetime, base64, pytz, random, csv
-import requests
 
 SCRIPT_DIR = os.path.dirname(__file__)
 WARP_BINARY_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
