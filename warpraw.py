@@ -86,7 +86,16 @@ def clean_up():
         print(f"Error removing file {IP_SCAN_RESULTS_PATH}: {e}")
 
 def main():
+    print(f"Script directory: {SCRIPT_DIR}")
+    print(f"Expected CSV path: {IP_SCAN_RESULTS_PATH}")
+    print("Directory contents before running warp program:")
+    print(os.listdir(SCRIPT_DIR))
+
     run_warp_program()
+
+    print("Directory contents after running warp program:")
+    print(os.listdir(SCRIPT_DIR))
+    
     lowest_latency_ips = extract_ips_with_lowest_latency()
     if len(lowest_latency_ips) < 2:
         print("Error: Not enough IPs with low latency found.")
