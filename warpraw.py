@@ -9,6 +9,7 @@ import csv
 SCRIPT_DIR = os.path.dirname(__file__)
 WARP_SERVER_SCANNER_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
 SERVER_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
+CONFIG_FILE_PATH = os.path.join(SCRIPT_DIR, 'config')
 
 def get_repository_name():
     return os.path.basename(os.path.dirname(SCRIPT_DIR)).upper()
@@ -58,8 +59,9 @@ def get_last_update_time():
     return local_time.strftime("%Y-%m-%d %H:%M") + " Tehran, Iran Time"
 
 def generate_warp_config(top_servers, last_update_time):
-    mtu = random.randint(1280, 1420)
-    warp_config = f'warp://{top_servers[0]}?ifpm=m4&ifp=80-150&ifps=80-150&ifpd=20-25&mtu={mtu}#IR&&detour=warp://{top_servers[1]}#DE'
+    available_modes = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6']
+    mode = random.choice(available_modes)
+    warp_config = f'warp://{top_servers[0]}?ifp=80-150&ifps=80-150&ifpd=20-25&ifpm={mode}#IR&&detour=warp://{top_servers[1]}#DE'
     warp_hiddify_config = (
         f"//profile-title: base64:{base64_encode(get_repository_name())}\n"
         f"//profile-update-interval: 1\n"
@@ -68,7 +70,7 @@ def generate_warp_config(top_servers, last_update_time):
         f"{warp_config}"
     )
     try:
-        with open('config', 'w') as config_file:
+        with open(CONFIG_FILE_PATH, 'w') as config_file:
             config_file.write(base64_encode(warp_hiddify_config))
     except IOError as e:
         print(f"Error writing to configuration file: {e}")
