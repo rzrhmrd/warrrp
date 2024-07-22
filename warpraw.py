@@ -30,7 +30,7 @@ def extract_top_two_servers():
             reader = csv.reader(csv_file)
             next(reader)  # Skip header
             for row in reader:
-                server_address = row[0]
+                server_address = row[0].split(':')[0]  # Extract only the server address
                 top_servers.append(server_address)
 
                 if len(top_servers) == 2:
@@ -58,7 +58,7 @@ def get_last_update_time():
 def generate_warp_config(top_servers, last_update_time):
     available_modes = ['m4', 'm5']
     mode = random.choice(available_modes)
-    warp_config = f'warp://{top_servers[0]}?ifp=80-150&ifps=80-150&ifpd=20-25&ifpm={mode}#IR&&detour=warp://{top_servers[1]}#DE'
+    warp_config = f'warp://{top_servers[0]}?ifpm={mode}#IR&&detour=warp://{top_servers[1]}#DE'
     warp_hiddify_config = (
         f"//profile-title: base64:{base64_encode(get_repository_name())}\n"
         f"//profile-update-interval: 1\n"
