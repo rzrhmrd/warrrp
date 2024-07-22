@@ -61,7 +61,7 @@ def get_last_update_time():
         return None
     tehran_tz = pytz.timezone('Asia/Tehran')
     local_time = datetime.datetime.fromtimestamp(creation_time, tehran_tz)
-    return local_time.strftime("%Y-%m-%d %H:%M") + " Tehran, Iran"
+    return local_time.strftime("%Y-%m-%d %H:%M") + " Tehran, Iran Time"
 
 def generate_warp_config(lowest_latency_ips, last_update_time):
     mtu = random.randint(1280, 1420)
