@@ -1,85 +1,55 @@
-import subprocess, os, datetime, base64, pytz, random, csv
+import subprocess
+import os
+import datetime
+import base64
+import pytz
+import random
+import csv
 
 SCRIPT_DIR = os.path.dirname(__file__)
-WARP_BINARY_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
-IP_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
+WARP_SERVER_SCANNER_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
+SERVER_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
 
 def get_repository_name():
     return os.path.basename(os.path.dirname(SCRIPT_DIR)).upper()
 
-def run_warp_program():
-    if not os.path.exists(WARP_BINARY_PATH):
-        raise RuntimeError(f"Warp binary not found at {WARP_BINARY_PATH}")
-    os.chmod(WARP_BINARY_PATH, 0o755)
-    process = subprocess.run([WARP_BINARY_PATH], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+def run_warp_server_scanner():
+    if not os.path.exists(WARP_SERVER_SCANNER_PATH):
+        raise RuntimeError(f"Warp binary not found at {WARP_SERVER_SCANNER_PATH}")
+    os.chmod(WARP_SERVER_SCANNER_PATH, 0o755)
+    process = subprocess.run([WARP_SERVER_SCANNER_PATH], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     if process.returncode != 0:
         raise RuntimeError("Warp execution failed")
 
-def print_first_n_lines(file_path, n=10):
-    try:
-        with open(file_path, 'r') as file:
-            reader = csv.reader(file)
-            for i, row in enumerate(reader):
-                if i == 0:  # Skip header
-                    continue
-                print(row)
-                if i >= n - 1:
-                    break
-    except FileNotFoundError:
-        print(f"File not found: {file_path}")
-    except Exception as e:
-        print(f"Error reading file {file_path}: {e}")
-
-def extract_ips_with_lowest_latency():
+def extract_top_two_servers():
     """
-    Extracts IP addresses from the scan results CSV file and returns the two IPs with the lowest latency.
+    Extracts the top two server addresses from the scan results.
     """
-    ip_latency_pairs = []
-
-    print("First 10 lines of the CSV before sorting:")
-    print_first_n_lines(IP_SCAN_RESULTS_PATH, 10)
+    top_servers = []
 
     try:
-        with open(IP_SCAN_RESULTS_PATH, 'r') as csv_file:
+        with open(SERVER_SCAN_RESULTS_PATH, 'r') as csv_file:
             reader = csv.reader(csv_file)
             next(reader)  # Skip header
             for row in reader:
-                ip_address = row[0]
-                latency_str = row[1]
+                server_address = row[0]
+                top_servers.append(server_address)
                 
-                # Handle percentage values if present
-                if latency_str.endswith('%'):
-                    latency_str = latency_str.strip('%')
-                
-                try:
-                    latency = int(latency_str)
-                except ValueError:
-                    raise RuntimeError(f"Invalid latency value: {latency_str}")
-
-                ip_latency_pairs.append((ip_address, latency))
+                if len(top_servers) == 2:
+                    break
     except FileNotFoundError:
-        raise RuntimeError(f"CSV file not found at {IP_SCAN_RESULTS_PATH}")
+        raise RuntimeError(f"CSV file not found at {SERVER_SCAN_RESULTS_PATH}")
     except Exception as e:
         raise RuntimeError(f"Error reading CSV file: {e}")
 
-    # Sort by latency
-    ip_latency_pairs.sort(key=lambda x: x[1])
-
-    print("First 10 lines of the CSV after sorting:")
-    for ip, latency in ip_latency_pairs[:10]:
-        print((ip, latency))
-
-    # Get the two IPs with the lowest latency
-    lowest_latency_ips = [ip for ip, _ in ip_latency_pairs[:2]]
-
-    return lowest_latency_ips
+    return top_servers
 
 def base64_encode(data):
     return base64.b64encode(data.encode('utf-8')).decode('utf-8')
 
 def get_last_update_time():
     try:
-        creation_time = os.path.getctime(IP_SCAN_RESULTS_PATH)
+        creation_time = os.path.getctime(SERVER_SCAN_RESULTS_PATH)
     except OSError as e:
         print(f"Error accessing the result CSV file: {e}")
         return None
@@ -87,9 +57,9 @@ def get_last_update_time():
     local_time = datetime.datetime.fromtimestamp(creation_time, tehran_tz)
     return local_time.strftime("%Y-%m-%d %H:%M") + " Tehran, Iran Time"
 
-def generate_warp_config(lowest_latency_ips, last_update_time):
+def generate_warp_config(top_servers, last_update_time):
     mtu = random.randint(1280, 1420)
-    warp_config = f'warp://{lowest_latency_ips[0]}?ifpm=m4&ifp=80-150&ifps=80-150&ifpd=20-25&mtu={mtu}#IR&&detour=warp://{lowest_latency_ips[1]}#DE'
+    warp_config = f'warp://{top_servers[0]}?ifpm=m4&ifp=80-150&ifps=80-150&ifpd=20-25&mtu={mtu}#IR&&detour=warp://{top_servers[1]}#DE'
     warp_hiddify_config = (
         f"//profile-title: base64:{base64_encode(get_repository_name())}\n"
         f"//profile-update-interval: 1\n"
@@ -105,21 +75,21 @@ def generate_warp_config(lowest_latency_ips, last_update_time):
 
 def clean_up():
     try:
-        os.remove(IP_SCAN_RESULTS_PATH)
+        os.remove(SERVER_SCAN_RESULTS_PATH)
     except OSError as e:
-        print(f"Error removing file {IP_SCAN_RESULTS_PATH}: {e}")
+        print(f"Error removing file {SERVER_SCAN_RESULTS_PATH}: {e}")
 
 def main():
-    run_warp_program()
-    lowest_latency_ips = extract_ips_with_lowest_latency()
-    if len(lowest_latency_ips) < 2:
-        print("Error: Not enough IPs with low latency found.")
+    run_warp_server_scanner()
+    top_servers = extract_top_two_servers()
+    if len(top_servers) < 2:
+        print("Error: Not enough servers found.")
         return
     last_update_time = get_last_update_time()
     if last_update_time is None:
         print("Error: Unable to get last update time.")
         return
-    generate_warp_config(lowest_latency_ips, last_update_time)
+    generate_warp_config(top_servers, last_update_time)
     clean_up()
     print("Warp execution and configuration generation completed successfully.")
 
