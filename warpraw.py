@@ -15,11 +15,29 @@ def run_warp_program():
     if process.returncode != 0:
         raise RuntimeError("Warp execution failed")
 
+def print_first_n_lines(file_path, n=10):
+    try:
+        with open(file_path, 'r') as file:
+            reader = csv.reader(file)
+            for i, row in enumerate(reader):
+                if i == 0:  # Skip header
+                    continue
+                print(row)
+                if i >= n - 1:
+                    break
+    except FileNotFoundError:
+        print(f"File not found: {file_path}")
+    except Exception as e:
+        print(f"Error reading file {file_path}: {e}")
+
 def extract_ips_with_lowest_latency():
     """
     Extracts IP addresses from the scan results CSV file and returns the two IPs with the lowest latency.
     """
     ip_latency_pairs = []
+
+    print("First 10 lines of the CSV before sorting:")
+    print_first_n_lines(IP_SCAN_RESULTS_PATH, 10)
 
     try:
         with open(IP_SCAN_RESULTS_PATH, 'r') as csv_file:
@@ -44,8 +62,14 @@ def extract_ips_with_lowest_latency():
     except Exception as e:
         raise RuntimeError(f"Error reading CSV file: {e}")
 
-    # Sort by latency and get the two IPs with the lowest latency
+    # Sort by latency
     ip_latency_pairs.sort(key=lambda x: x[1])
+
+    print("First 10 lines of the CSV after sorting:")
+    for ip, latency in ip_latency_pairs[:10]:
+        print((ip, latency))
+
+    # Get the two IPs with the lowest latency
     lowest_latency_ips = [ip for ip, _ in ip_latency_pairs[:2]]
 
     return lowest_latency_ips
