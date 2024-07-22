@@ -35,7 +35,7 @@ def extract_top_two_servers():
             for row in reader:
                 server_address = row[0]
                 top_servers.append(server_address)
-                
+
                 if len(top_servers) == 2:
                     break
     except FileNotFoundError:
@@ -59,7 +59,7 @@ def get_last_update_time():
     return local_time.strftime("%Y-%m-%d %H:%M") + " Tehran, Iran Time"
 
 def generate_warp_config(top_servers, last_update_time):
-    available_modes = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6']
+    available_modes = ['m4', 'm5']  # Only m4 and m5 modes
     mode = random.choice(available_modes)
     warp_config = f'warp://{top_servers[0]}?ifp=80-150&ifps=80-150&ifpd=20-25&ifpm={mode}#IR&&detour=warp://{top_servers[1]}#DE'
     warp_hiddify_config = (
