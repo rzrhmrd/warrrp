@@ -2,7 +2,7 @@ import subprocess, os, datetime, base64, pytz, random, csv
 
 SCRIPT_DIR = os.path.dirname(__file__)
 WARP_BINARY_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
-IP_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
+IP_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'ip_scan_results.csv')
 
 def get_repository_name():
     return os.path.basename(os.path.dirname(SCRIPT_DIR)).upper()
@@ -27,7 +27,17 @@ def extract_ips_with_lowest_latency():
             next(reader)  # Skip header
             for row in reader:
                 ip_address = row[0]
-                latency = float(row[1])
+                latency_str = row[1]
+                
+                # Handle percentage values if present
+                if latency_str.endswith('%'):
+                    latency_str = latency_str.strip('%')
+                
+                try:
+                    latency = int(latency_str)
+                except ValueError:
+                    raise RuntimeError(f"Invalid latency value: {latency_str}")
+
                 ip_latency_pairs.append((ip_address, latency))
     except FileNotFoundError:
         raise RuntimeError(f"CSV file not found at {IP_SCAN_RESULTS_PATH}")
@@ -51,7 +61,7 @@ def get_last_update_time():
         return None
     tehran_tz = pytz.timezone('Asia/Tehran')
     local_time = datetime.datetime.fromtimestamp(creation_time, tehran_tz)
-    return local_time.strftime("%Y-%m-%d %H:%M:%S") + " Tehran, Iran"
+    return local_time.strftime("%Y-%m-%d %H:%M") + " Tehran, Iran"
 
 def generate_warp_config(lowest_latency_ips, last_update_time):
     mtu = random.randint(1280, 1420)
