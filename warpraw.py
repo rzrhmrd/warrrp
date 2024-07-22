@@ -59,7 +59,7 @@ def get_last_update_time():
     return local_time.strftime("%Y-%m-%d %H:%M") + " Tehran, Iran Time"
 
 def generate_warp_config(top_servers, last_update_time):
-    available_modes = ['m4', 'm5']  # Only m4 and m5 modes
+    available_modes = ['m4', 'm5']
     mode = random.choice(available_modes)
     warp_config = f'warp://{top_servers[0]}?ifp=80-150&ifps=80-150&ifpd=20-25&ifpm={mode}#IR&&detour=warp://{top_servers[1]}#DE'
     warp_hiddify_config = (
