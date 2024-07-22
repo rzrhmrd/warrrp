@@ -1,8 +1,8 @@
-import subprocess, os, datetime, base64, pytz, random, csv
+نimport subprocess, os, datetime, base64, pytz, random, csv
 
 SCRIPT_DIR = os.path.dirname(__file__)
 WARP_BINARY_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
-IP_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'ip_scan_results.csv')
+IP_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
 
 def get_repository_name():
     return os.path.basename(os.path.dirname(SCRIPT_DIR)).upper()
@@ -86,16 +86,7 @@ def clean_up():
         print(f"Error removing file {IP_SCAN_RESULTS_PATH}: {e}")
 
 def main():
-    print(f"Script directory: {SCRIPT_DIR}")
-    print(f"Expected CSV path: {IP_SCAN_RESULTS_PATH}")
-    print("Directory contents before running warp program:")
-    print(os.listdir(SCRIPT_DIR))
-
     run_warp_program()
-
-    print("Directory contents after running warp program:")
-    print(os.listdir(SCRIPT_DIR))
-    
     lowest_latency_ips = extract_ips_with_lowest_latency()
     if len(lowest_latency_ips) < 2:
         print("Error: Not enough IPs with low latency found.")
