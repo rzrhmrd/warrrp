@@ -13,7 +13,7 @@ SERVER_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
 CONFIG_FILE_PATH = os.path.join(SCRIPT_DIR, 'config')
 
 CHECK_HOST_API_URL = "https://check-host.net/check-ping"
-TEHRAN_NODE = "ir-1"
+TEHRAN_NODE = "ir1.node.check-host.net"
 
 def get_repository_name():
     return os.path.basename(os.path.dirname(SCRIPT_DIR)).upper()
@@ -49,9 +49,15 @@ def extract_top_servers():
 def check_ping(server):
     response = requests.post(CHECK_HOST_API_URL, data={'host': server, 'nodes[]': TEHRAN_NODE})
     if response.status_code == 200:
-        result = response.json()
-        if TEHRAN_NODE in result['nodes']:
-            return result['nodes'][TEHRAN_NODE]['ping']
+        try:
+            result = response.json()
+            if TEHRAN_NODE in result['nodes']:
+                return result['nodes'][TEHRAN_NODE][3]  # Assuming the ping time is in the fourth element
+        except requests.exceptions.JSONDecodeError as e:
+            print(f"JSON decode error for server {server}: {e}")
+            print(f"Response content: {response.text}")
+    else:
+        print(f"Error: Received status code {response.status_code} for server {server}")
     return None
 
 def get_best_servers(servers):
