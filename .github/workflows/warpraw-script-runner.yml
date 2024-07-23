@@ -29,6 +29,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install ipaddress
           pip install pytz
+          pip install requests
 
       - name: Run WARPRAW Script
         run: python warpraw.py
