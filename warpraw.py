@@ -5,15 +5,11 @@ import base64
 import pytz
 import random
 import csv
-import requests
 
 SCRIPT_DIR = os.path.dirname(__file__)
 WARP_SERVER_SCANNER_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
 SERVER_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
 CONFIG_FILE_PATH = os.path.join(SCRIPT_DIR, 'config')
-
-CHECK_HOST_API_URL = "https://check-host.net/check-ping"
-TEHRAN_NODE = "ir1.node.check-host.net"
 
 def get_repository_name():
     return os.path.basename(os.path.dirname(SCRIPT_DIR)).upper()
@@ -26,8 +22,8 @@ def run_warp_server_scanner():
     if process.returncode != 0:
         raise RuntimeError("Warp execution failed")
 
-def extract_top_servers():
-    servers = []
+def extract_top_two_servers():
+    top_servers = []
 
     try:
         with open(SERVER_SCAN_RESULTS_PATH, 'r') as csv_file:
@@ -35,47 +31,16 @@ def extract_top_servers():
             next(reader)  # Skip header
             for row in reader:
                 server_address = row[0].split(':')[0]  # Extract only the server address
-                servers.append(server_address)
+                top_servers.append(server_address)
 
-                if len(servers) == 10:
+                if len(top_servers) == 2:
                     break
     except FileNotFoundError:
         raise RuntimeError(f"CSV file not found at {SERVER_SCAN_RESULTS_PATH}")
     except Exception as e:
         raise RuntimeError(f"Error reading CSV file: {e}")
 
-    return servers
-
-def check_ping(server):
-    response = requests.post(CHECK_HOST_API_URL, data={'host': server, 'nodes[]': TEHRAN_NODE})
-    if response.status_code == 200:
-        try:
-            result = response.json()
-            if TEHRAN_NODE in result['nodes']:
-                return result['nodes'][TEHRAN_NODE][3]  # Assuming the ping time is in the fourth element
-        except requests.exceptions.JSONDecodeError as e:
-            print(f"JSON decode error for server {server}: {e}")
-            print(f"Response content: {response.text}")
-    else:
-        print(f"Error: Received status code {response.status_code} for server {server}")
-    return None
-
-def get_best_servers(servers):
-    ping_results = []
-    for server in servers:
-        ping = check_ping(server)
-        if ping:
-            ping_results.append((server, ping))
-    
-    # Debug print statement before sorting
-    print("Ping results before sorting:", ping_results)
-    
-    ping_results.sort(key=lambda x: x[1])  # Sort by ping time
-    
-    # Debug print statement after sorting
-    print("Ping results after sorting:", ping_results)
-    
-    return [server for server, _ in ping_results[:2]]
+    return top_servers
 
 def base64_encode(data):
     return base64.b64encode(data.encode('utf-8')).decode('utf-8')
@@ -91,9 +56,9 @@ def get_last_update_time():
     return local_time.strftime("%Y-%m-%d %H:%M") + " Tehran, Iran Time"
 
 def generate_warp_config(top_servers, last_update_time):
-    available_modes = ['m4', 'm5']
-    mode = random.choice(available_modes)
-    warp_config = f'warp://{top_servers[0]}?ifp=80-150&ifps=80-150&ifpd=20-25&ifpm={mode}#IR&&detour=warp://{top_servers[1]}#DE'
+    available_noise_modes = ['m4', 'm5']
+    noise_mode = random.choice(available_noise_modes)
+    warp_config = f'warp://{top_servers[0]}?ifp=80-150&ifps=80-150&ifpd=20-25&ifpm={noise_mode}#IR&&detour=warp://{top_servers[1]}#DE'
     warp_hiddify_config = (
         f"//profile-title: base64:{base64_encode(get_repository_name())}\n"
         f"//profile-update-interval: 1\n"
@@ -115,19 +80,15 @@ def clean_up():
 
 def main():
     run_warp_server_scanner()
-    servers = extract_top_servers()
-    if len(servers) < 10:
+    top_servers = extract_top_two_servers()
+    if len(top_servers) < 2:
         print("Error: Not enough servers found.")
-        return
-    best_servers = get_best_servers(servers)
-    if len(best_servers) < 2:
-        print("Error: Not enough servers with ping results found.")
         return
     last_update_time = get_last_update_time()
     if last_update_time is None:
         print("Error: Unable to get last update time.")
         return
-    generate_warp_config(best_servers, last_update_time)
+    generate_warp_config(top_servers, last_update_time)
     clean_up()
     print("Warp execution and configuration generation completed successfully.")
 
