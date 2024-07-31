@@ -57,7 +57,6 @@ def get_last_update_time():
 
 def generate_warp_config(top_servers, last_update_time):
     plus_key = os.getenv('PLUS_KEY')
-    noise_mode = random.choice(available_noise_modes)
     warp_config = f'warp://{top_servers[0]}?ifp=80-150&ifps=80-150&ifpd=20-25&ifpm=m4#IR&&detour=warp://{top_servers[1]}#DE'
     warp_hiddify_config = (
         f"//profile-title: base64:{base64_encode(get_repository_name())}\n"
