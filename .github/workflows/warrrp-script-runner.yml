@@ -1,4 +1,4 @@
-name: WAAARP Script Runner
+name: WARRRP Script Runner
 
 on:
   push:
@@ -31,7 +31,7 @@ jobs:
           pip install ipaddress
           pip install pytz
 
-      - name: Run WAAARP Script
+      - name: Run WARRRP Script
         run: python warpraw.py
 
       - name: Commit and Push Changes
