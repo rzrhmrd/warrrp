@@ -1,6 +1,10 @@
 # WARRRP
 
-WARRRP is a script that **generates a Hiddify WARP config with a new server address every hour**. This configuration can be used for a free VPN service leveraging Cloudflare's WARP technology and the Hiddify client.
+WARRRP is a robust script designed to **generate a Hiddify WARP configuration with a new server address every hour**. This ensures a highly resilient and continuously updated VPN service leveraging Cloudflare's WARP technology and the Hiddify client. **Best of all, it's completely free!**
+
+## Key Values: Resiliency and Free Service
+
+The core strength of WARRRP lies in its hourly update mechanism, providing a dynamic and reliable VPN configuration that adapts to potential network changes and disruptions. This ensures you always have access to a current and functional server address, enhancing your VPN experience with minimal downtime and maximum security. Plus, you can enjoy these benefits without any cost.
 
 ## Getting Started
 
@@ -11,7 +15,7 @@ WARRRP is a script that **generates a Hiddify WARP config with a new server addr
 ### Installation
 
 1. **Download and Install the Hiddify Client**:
-   - Go to the [Hiddify Releases Page](https://github.com/hiddify/hiddify-next/releases).
+   - Visit the [Hiddify Releases Page](https://github.com/hiddify/hiddify-next/releases).
    - Download the appropriate version for your platform.
    - Follow the installation instructions provided on the releases page.
 
