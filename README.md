@@ -1,6 +1,6 @@
 # WARRRP
 
-WARRRP is a robust script designed to **generate a Hiddify WARP configuration with a new server address every hour**. This ensures a highly resilient and continuously updated VPN service leveraging Cloudflare's WARP technology and the Hiddify client. **Best of all, it's completely free!**
+WARRRP is a robust script designed to **generate a Hiddify WARP config with a new server address every hour**. This ensures a highly resilient and continuously updated VPN service leveraging Cloudflare's WARP technology and the Hiddify client. **Best of all, it's completely free!**
 
 ## Key Values: Resiliency and Free Service
 
