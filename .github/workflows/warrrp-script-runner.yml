@@ -32,7 +32,7 @@ jobs:
           pip install pytz
 
       - name: Run WARRRP Script
-        run: python warpraw.py
+        run: python warrrp.py
 
       - name: Commit and Push Changes
         run: |
