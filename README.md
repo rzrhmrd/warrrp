@@ -15,8 +15,11 @@ The core strength of WARRRP lies in its hourly update mechanism, providing a dyn
 ### Usage
 
 **Configure Hiddify with WARRRP**:
-
-Once Hiddify is installed, simply [import the config](hiddify://import/https://raw.githubusercontent.com/rzmmzdh/warrrp/main/config).
+   1. Copy the config address: `https://raw.githubusercontent.com/rzrhmrd/warrrp/main/config`
+   2. Open the Hiddify client.
+   3. Click on the **+** icon on the top right corner of the app.
+   4. Click on the **Add From Clipboard** button.
+   5. Connect.
 
 ## License
 
