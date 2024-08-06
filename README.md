@@ -4,7 +4,7 @@ WARRRP is a robust script designed to **generate a free and unlimited Hiddify WA
 
 ## Key Values: Resiliency and Free Service
 
-The core strength of WARRRP lies in its hourly update mechanism, providing a dynamic and reliable VPN configuration that adapts to potential network changes and disruptions. This ensures you always have access to a current and functional server address, enhancing your VPN experience with minimal downtime and maximum security. Plus, you can enjoy these benefits without any cost.
+The core strength of WARRRP lies in its hourly update mechanism, providing a dynamic and reliable VPN configuration that adapts to potential network changes and disruptions. This ensures you always have access to a current and functional server, enhancing your VPN experience with minimal downtime and maximum security. By leveraging this automatic hourly update feature, users can experience minimal downtime and maintain a secure connection with an always-updated server address. Plus, you can enjoy these benefits without any cost.
 
 ## Getting Started
 
@@ -23,7 +23,7 @@ The core strength of WARRRP lies in its hourly update mechanism, providing a dyn
    - Copy the config address: `https://raw.githubusercontent.com/rzrhmrd/warrrp/main/config`
    - Open the Hiddify client.
    - Click on the **+** icon on the top right corner of the app.
-   - Click on the  **Add From Clipboard** button.
+   - Click on the **Add From Clipboard** button.
 
 ## License
 
@@ -36,3 +36,7 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 ## Contact
 
 For any questions or support, please [open an issue](https://github.com/rzrhmrd/warrrp/issues).
+
+---
+
+Feel free to use and share WARRRP to ensure a secure, resilient, and continuously updated VPN experience!
