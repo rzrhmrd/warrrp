@@ -63,7 +63,7 @@ def generate_warp_config(top_servers, last_update_time):
         f"#profile-update-interval: 1\n"
         f"#subscription-userinfo: upload=0; download=0; total=10737418240000000; expire=2546249531\n"
         f"#profile-web-page-url: https://github.com/rzrhmrd/warrrp\n"
-        f"//last-update: {last_update_time}\n"
+        f"#last-update: {last_update_time}\n"
         f"{warp_config}"
     )
     try:
