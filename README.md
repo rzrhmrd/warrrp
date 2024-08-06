@@ -16,7 +16,7 @@ The core strength of WARRRP lies in its hourly update mechanism, providing a dyn
 
 **Configure Hiddify with WARRRP**:
 
-Once Hiddify is installed, simply [import the config.](hiddify://import/https://raw.githubusercontent.com/rzmmzdh/warrrp/main/config)
+Once Hiddify is installed, simply [import the config](hiddify://import/https://raw.githubusercontent.com/rzmmzdh/warrrp/main/config).
 
 ## License
 
