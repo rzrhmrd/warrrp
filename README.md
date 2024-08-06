@@ -4,7 +4,7 @@ WARRRP is a robust script designed to **generate a free and unlimited Hiddify WA
 
 ## Key Values: Resiliency and Free Service
 
-The core strength of WARRRP lies in its hourly update mechanism, providing a dynamic and reliable VPN configuration that adapts to potential network changes and disruptions. This ensures you always have access to a current and functional server, enhancing your VPN experience with minimal downtime and maximum security. By leveraging this automatic hourly update feature, users can experience minimal downtime and maintain a secure connection with an always-updated server address. Plus, you can enjoy these benefits without any cost.
+The core strength of WARRRP lies in its hourly update mechanism, providing a dynamic and reliable VPN configuration that adapts to potential network changes and disruptions. This ensures you always have access to a current and functional server, enhancing your VPN experience with minimal downtime and maximum security. Plus, you can enjoy these benefits without any cost.
 
 ## Getting Started
 
