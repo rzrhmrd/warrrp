@@ -36,7 +36,3 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 ## Contact
 
 For any questions or support, please [open an issue](https://github.com/rzrhmrd/warrrp/issues).
-
----
-
-Feel free to use and share WARRRP to ensure a secure, resilient, and continuously updated VPN experience!
