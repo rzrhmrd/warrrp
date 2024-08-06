@@ -16,8 +16,7 @@ The core strength of WARRRP lies in its hourly update mechanism, providing a dyn
 
 1. **Download and Install the Hiddify Client**:
    - Visit the [Hiddify Releases Page](https://github.com/hiddify/hiddify-next/releases).
-   - Download the appropriate version for your platform.
-   - Follow the installation instructions provided on the releases page.
+   - Download and install the appropriate version for your platform.
 
 2. **Configure Hiddify with WARRRP**:
    - Copy the config address: `https://raw.githubusercontent.com/rzrhmrd/warrrp/main/config`
