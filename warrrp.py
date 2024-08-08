@@ -70,8 +70,8 @@ def generate_warp_config(top_servers, last_update_time):
     plus_key = os.getenv('PLUS_KEY')
     
     warp_config = (
-        f'warp://{top_servers[0]}?ifp=40-80&ifps=40-100&ifpd=4-8&ifpm=m4#IR-MCI&&detour=warp://{top_servers[1]}#DE-MCI'
-        f'warp://{top_servers[0]}?ifp=20-35&ifps=5-35&ifpd=5-35&ifpm=m3#IR-Irancell&&detour=warp://{top_servers[1]}#DE-Irancell'
+        f"warp://{top_servers[0]}?ifp=40-80&ifps=40-100&ifpd=4-8&ifpm=m4#IR-MCI&&detour=warp://{top_servers[1]}#DE-MCI\n"
+        f"warp://{top_servers[0]}?ifp=20-35&ifps=5-35&ifpd=5-35&ifpm=m3#IR-Irancell&&detour=warp://{top_servers[1]}#DE-Irancell"
     )
     
     warp_hiddify_config = (
