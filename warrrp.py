@@ -2,10 +2,10 @@ import os
 import csv
 import base64
 import pytz
-import random
 import datetime
 import subprocess
 
+# Constants for paths
 SCRIPT_DIR = os.path.dirname(__file__)
 WARP_SERVER_SCANNER_PATH = os.path.join(SCRIPT_DIR, 'bin', 'warp')
 SERVER_SCAN_RESULTS_PATH = os.path.join(SCRIPT_DIR, 'result.csv')
