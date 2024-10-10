@@ -1,3 +1,6 @@
+Got it. You'll want to keep the port information when extracting the servers. Here's the updated script:
+
+```python
 import os
 import csv
 import base64
@@ -27,7 +30,7 @@ def run_warp_server_scanner():
         raise RuntimeError("Warp execution failed")
 
 def extract_top_two_servers():
-    """Extracts the top two server addresses with ports from the CSV results."""
+    """Extracts the top two server addresses from the CSV results."""
     top_servers = []
 
     try:
@@ -86,4 +89,36 @@ def generate_warp_config(top_servers, last_update_time):
         with open(CONFIG_FILE_PATH, 'w') as config_file:
             config_file.write(base64_encode(warp_hiddify_config))
     except IOError as e:
-        print(
+        print(f"Error writing to configuration file: {e}")
+
+def clean_up():
+    """Cleans up by removing the result CSV file."""
+    try:
+        os.remove(SERVER_SCAN_RESULTS_PATH)
+    except OSError as e:
+        print(f"Error removing file {SERVER_SCAN_RESULTS_PATH}: {e}")
+
+def main():
+    """Main function to run the warp server scanner and generate the config."""
+    run_warp_server_scanner()
+    top_servers = extract_top_two_servers()
+
+    if len(top_servers) < 2:
+        print("Error: Not enough servers found.")
+        return
+
+    last_update_time = get_last_update_time()
+
+    if last_update_time is None:
+        print("Error: Unable to get last update time.")
+        return
+
+    generate_warp_config(top_servers, last_update_time)
+    clean_up()
+    print("Warp execution and configuration generation completed successfully.")
+
+if __name__ == "__main__":
+    main()
+```
+
+This keeps the port in the server addresses. Is there more you need?
