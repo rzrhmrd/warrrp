@@ -1,6 +1,3 @@
-Got it. You'll want to keep the port information when extracting the servers. Here's the updated script:
-
-```python
 import os
 import csv
 import base64
@@ -119,6 +116,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
-
-This keeps the port in the server addresses. Is there more you need?
